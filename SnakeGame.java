@@ -14,7 +14,6 @@ public class SnakeGame extends JFrame {
         setResizable(true);
         setMinimumSize(new Dimension(400, 400));
         
-        // Set App Icon
         try {
             ImageIcon icon = new ImageIcon("snake_icon.jpg");
             if (icon.getImageLoadStatus() == MediaTracker.COMPLETE) {
@@ -39,22 +38,18 @@ public class SnakeGame extends JFrame {
         Graphics2D g2 = image.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
-        // Draw background
         g2.setColor(new Color(18, 18, 18));
         g2.fillRoundRect(0, 0, 64, 64, 16, 16);
         
-        // Draw simple snake head and apple
         g2.setColor(new Color(76, 175, 80));
         g2.fillRoundRect(8, 20, 24, 24, 8, 8);
         
         g2.setColor(new Color(239, 83, 80));
         g2.fillOval(38, 24, 16, 16);
         
-        // Apple leaf
         g2.setColor(new Color(76, 175, 80));
         g2.fillOval(44, 20, 6, 8);
         
-        // Snake eyes
         g2.setColor(Color.BLACK);
         g2.fillOval(20, 26, 4, 4);
         g2.fillOval(20, 34, 4, 4);
@@ -70,7 +65,7 @@ public class SnakeGame extends JFrame {
     private static class GamePanel extends JPanel implements ActionListener {
         private static final int GRID_COLS = 24;
         private static final int GRID_ROWS = 24;
-        private static final int DEFAULT_UNIT_SIZE = 25; // Base dimensions: 600x600
+        private static final int DEFAULT_UNIT_SIZE = 25; 
 
         private enum GameState {
             MENU, PLAYING, PAUSED, GAME_OVER
@@ -94,15 +89,12 @@ public class SnakeGame extends JFrame {
         private GameState gameState = GameState.MENU;
         private Difficulty selectedDifficulty = Difficulty.MEDIUM;
 
-        // Snake parts in grid coordinates
         private final List<Point> snake = new ArrayList<>();
         private int snakeLength = 3;
         
-        // Food grid coordinates
         private Point food;
         
-        // Direction
-        private char direction = 'R'; // U, D, L, R
+        private char direction = 'R'; 
         private char nextDirection = 'R'; 
         
         private int score = 0;
@@ -113,10 +105,9 @@ public class SnakeGame extends JFrame {
 
         public GamePanel() {
             setPreferredSize(new Dimension(GRID_COLS * DEFAULT_UNIT_SIZE, GRID_ROWS * DEFAULT_UNIT_SIZE));
-            setBackground(new Color(18, 18, 18)); // Sleek dark theme background
+            setBackground(new Color(18, 18, 18)); 
             setFocusable(true);
             
-            // Add Key Listener
             addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyPressed(KeyEvent e) {
@@ -213,7 +204,6 @@ public class SnakeGame extends JFrame {
         }
 
         private void startGame() {
-            // Spawn default empty board setup
             snake.add(new Point(GRID_COLS / 2, GRID_ROWS / 2));
             food = new Point(0, 0);
             timer = new Timer(selectedDifficulty.delay, this);
@@ -227,7 +217,6 @@ public class SnakeGame extends JFrame {
             direction = 'R';
             nextDirection = 'R';
             
-            // Initial snake position in the middle
             int startX = GRID_COLS / 2;
             int startY = GRID_ROWS / 2;
             for (int i = 0; i < snakeLength; i++) {
@@ -324,7 +313,6 @@ public class SnakeGame extends JFrame {
                     line.drain();
                     line.close();
                 } catch (Exception e) {
-                    // Fail silently if audio is unavailable
                 }
             }).start();
         }
@@ -367,7 +355,6 @@ public class SnakeGame extends JFrame {
             int panelWidth = getWidth();
             int panelHeight = getHeight();
             
-            // Calculate dynamic unit size to preserve 1:1 ratio
             int unitSize = Math.min(panelWidth / GRID_COLS, panelHeight / GRID_ROWS);
             unitSize = Math.max(unitSize, 5);
             
@@ -382,14 +369,12 @@ public class SnakeGame extends JFrame {
                 return;
             }
             
-            // Fill background
             g2d.setColor(Color.BLACK);
             g2d.fillRect(0, 0, panelWidth, panelHeight);
             
             g2d.setColor(new Color(18, 18, 18));
             g2d.fillRect(offsetX, offsetY, boardWidth, boardHeight);
             
-            // Draw grid lines
             g2d.setColor(new Color(30, 30, 30));
             for (int i = 0; i <= GRID_COLS; i++) {
                 g2d.drawLine(offsetX + i * unitSize, offsetY, offsetX + i * unitSize, offsetY + boardHeight);
@@ -398,24 +383,20 @@ public class SnakeGame extends JFrame {
                 g2d.drawLine(offsetX, offsetY + j * unitSize, offsetX + boardWidth, offsetY + j * unitSize);
             }
             
-            // Draw Food
-            g2d.setColor(new Color(239, 83, 80)); // Neon red
+            g2d.setColor(new Color(239, 83, 80)); 
             g2d.fillRoundRect(offsetX + food.x * unitSize + 2, offsetY + food.y * unitSize + 2, unitSize - 4, unitSize - 4, 8, 8);
             g2d.setColor(new Color(255, 138, 128));
             g2d.fillOval(offsetX + food.x * unitSize + unitSize / 4 + 1, offsetY + food.y * unitSize + unitSize / 4 + 1, unitSize / 4, unitSize / 4);
             
-            // Draw Snake
             for (int i = 0; i < snake.size(); i++) {
                 Point segment = snake.get(i);
                 int sx = offsetX + segment.x * unitSize;
                 int sy = offsetY + segment.y * unitSize;
                 
                 if (i == 0) {
-                    // Snake Head
-                    g2d.setColor(new Color(76, 175, 80)); // Neon green
+                    g2d.setColor(new Color(76, 175, 80)); 
                     g2d.fillRoundRect(sx + 1, sy + 1, unitSize - 2, unitSize - 2, 10, 10);
                     
-                    // Eyes
                     g2d.setColor(Color.BLACK);
                     int eyeSize = Math.max(unitSize / 6, 2);
                     int offset = Math.max(unitSize / 5, 2);
@@ -427,7 +408,6 @@ public class SnakeGame extends JFrame {
                         g2d.fillOval(sx + unitSize - offset - eyeSize, sy + (direction == 'D' ? unitSize - offset - eyeSize : offset), eyeSize, eyeSize);
                     }
                 } else {
-                    // Body
                     float ratio = (float) i / snake.size();
                     int r = (int) (76 + ratio * 40);
                     int gr = (int) (175 - ratio * 50);
@@ -522,7 +502,6 @@ public class SnakeGame extends JFrame {
                     g2d.setColor(pillColor);
                     g2d.fillRoundRect(px, py, pWidth, pHeight, 10, 10);
                     
-                    // Text color
                     switch (diff) {
                         case EASY: g2d.setColor(new Color(76, 175, 80)); break;
                         case MEDIUM: g2d.setColor(new Color(255, 167, 38)); break;
